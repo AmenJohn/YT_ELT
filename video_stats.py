@@ -8,6 +8,7 @@ load_dotenv(dotenv_path="./.env")
 
 API_KEY = os.getenv("API_KEY") 
 CHANNEL_HANDEL = "MrBeast"
+maxResults = 50
 
 def get_playlist_id():
 
@@ -33,8 +34,48 @@ def get_playlist_id():
     
     except requests.exceptions.RequestException as e:
         raise e 
+    
+
+def get_video_ids(playlistid):
+
+    video_ids = []
+
+    pageToken = None 
+    base_url = f"https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults={maxResults}&playlistId={playlistid}&key={API_KEY}"
+
+    try: 
+
+        while True: 
+
+            url = base_url
+
+            if pageToken:
+                url += f"&pageToken={pageToken}"
+
+            response = requests.get(url)
+
+            response.raise_for_status()
+
+            data=response.json()
+
+            for item in data.get('items',[]):
+                video_id = item['contentDetails']['videoId']
+                video_ids.append(video_id)
+
+            pageToken = data.get('nextPageToken')
+
+            if not pageToken:
+                break
+
+        return video_ids
+
+
+    except requests.exceptions.RequestException as e:
+         raise e
+
 if __name__ == "__main__":
    # print("get_playlist_id will be executed") -do not need this print statement becuase this is now being called as a function by import_video_stats.py
-    get_playlist_id()
+    playlistid = get_playlist_id() 
+   # print(get_video_ids(playlistid))
 # else:
 #    print("get_play_list_id won't be executed")
