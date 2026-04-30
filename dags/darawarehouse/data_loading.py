@@ -15,7 +15,7 @@ def load_path():
         with open(file_path, "r",encoding="utf-8") as raw_data:
             date = json.load(raw_data)
 
-        return data 
+        return date 
     except FileNotFoundError:
         logger.error(f"file not found:{file_path}")
         raise
