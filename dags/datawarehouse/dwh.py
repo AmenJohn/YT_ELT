@@ -1,10 +1,10 @@
-from datawarehouse.data_utils import get_con_cursor, close_con_cursor, create_table,create_schema, get_video_ids get_video_ids
+from datawarehouse.data_utils import get_con_cursor, close_con_cursor, create_table, create_schema, get_video_ids
 from datawarehouse.data_loading import load_data
 from datawarehouse.data_transformation import transform_data
 from datawarehouse.data_modification import insert_rows, update_rows, delete_rows
 
 import logging
-from airflow.decorators import dag, task
+from airflow.decorators import task
 
 logger = logging.getLogger(__name__)
 table = "yt_api"
@@ -32,8 +32,9 @@ def staging_table():
             if len(table_ids) == 0: 
                 insert_rows(cur, conn, schema, row)
 
-            elif row['video_id'] not in table_ids:
-                insert_rows(cur, conn, schema, row)
+            else: 
+                if row['video_id'] in table_ids:
+                    update_rows(cur, conn, schema, row)
         
         ids_in_json = {row['video_id'] for row in YT_data}
 
@@ -73,20 +74,19 @@ def core_table():
 
         for row in rows:
 
-            current_video_ids.add(row['Video_ID'])
+            current_video_ids.add(row['video_id'])
 
             if len(table_ids) == 0:
-
                 transformed_row = transform_data(row)
                 insert_rows(cur, conn, schema, transformed_row) 
             else:
-                transform_row = transform_data(row)
+                transformed_row = transform_data(row)
 
                 if transformed_row['Video_ID'] in table_ids:
-                    update_rows(cur, conn, schema, transform_row)
+                    update_rows(cur, conn, schema, transformed_row)
 
                 else:
-                    insert_rows(cur, conn, schema, transform_row)
+                    insert_rows(cur, conn, schema, transformed_row)
 
         ids_to_delete = set(table_ids) - current_video_ids
 

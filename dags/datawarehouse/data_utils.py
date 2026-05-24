@@ -1,4 +1,8 @@
-from airflow.providers.postgres.hooks.postgres import PostgresHook
+try:
+    from airflow.providers.postgres.hooks.postgres import PostgresHook
+except ImportError:
+    from airflow.hooks.postgres_hook import PostgresHook
+
 from psycopg2.extras import RealDictCursor
 
 table = "yt_api"
@@ -51,6 +55,7 @@ def create_table(schema):
                     "Video_Title" TEXT NOT NULL,
                     "Upload_Date" TIMESTAMP NOT NULL,
                     "Duration" VARCHAR(20) NOT NULL,
+                    "Video_Type" VARCHAR(20) NOT NULL,
                     "Video_Views" INT,
                     "Likes_Count" INT,
                     "Comments_Count" INT
