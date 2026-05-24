@@ -74,7 +74,7 @@ def core_table():
 
         for row in rows:
 
-            current_video_ids.add(row['video_id'])
+            current_video_ids.add(row['Video_ID'])
 
             if len(table_ids) == 0:
                 transformed_row = transform_data(row)

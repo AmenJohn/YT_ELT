@@ -30,10 +30,10 @@ def insert_rows(cur,conn,schema,row):
             )
         conn.commit()
 
-        logger.info(f"Inserted row with Video_ID: {row['video_id']}")
+        logger.info(f"Inserted row with Video_ID: {row.get('Video_ID', 'Unknown')}")
 
     except Exception as e:
-        logger.error(f"Error inserting row with Video_ID: {row['video_id']}")
+        logger.error(f"Error inserting row with Video_ID: {row.get('Video_ID', 'Unknown')}")
         raise e
             
 
@@ -75,10 +75,10 @@ def update_rows(cur, conn, schema, row):
         
         conn.commit()
 
-        logger.info(f"Updated row with Video_ID: {row['video_id']}")
+        logger.info(f"Updated row with Video_ID: {row.get('Video_ID', 'Unknown')}")
 
     except Exception as e:
-        logger.error(f"Error updating row with Video_ID: {row['video_id']} -  {e}")
+        logger.error(f"Error updating row with Video_ID: {row.get('Video_ID', 'Unknown')} -  {e}")
         raise e
 
 def delete_rows(cur, conn, schema, ids_to_delete):
