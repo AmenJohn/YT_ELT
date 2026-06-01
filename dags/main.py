@@ -29,7 +29,7 @@ staging_schema = "staging"
 core_schema = "core"
 
 with DAG(
-        dag_id='produce_jason',
+        dag_id='produce_json',
         default_args=default_args,
         description='DAG to produce JSON file with raw data',
         schedule='0 14 * * *',
